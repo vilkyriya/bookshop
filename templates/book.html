@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block head_title %} {{book.title }}{% endblock %}
+
+{% block content %}
+
+<div class="card border-light mb-3 col-lg-4" style="min-width: 20rem;">
+    <div class="col text-center">
+        {% if book.sale %}
+        <img style="background-image:url({{ book.image.url }}); background-size: contain; height:400px; width:260px;"
+             src="{{ MEDIA_URL }}/sale.png" height="400px" width="260px">
+        {% else %}
+        <img src="{{ book.image.url }}" height="400px" width="260px">
+        {% endif %}
+    </div>
+    <br>
+        <div class="col text-center">
+        {% if request.user.is_authenticated %}
+            {% if book.available == 1 %}
+                <a type="button" class="btn btn-primary" href="{% url 'add-to-cart' pk=book.id_book %}">Добавить в корзину</a>
+            {% else %}
+                <a type="button" class="btn btn-secondary disabled" href="#">Нет в наличии</a>
+            {% endif %}
+        {% endif %}
+        </div>
+</div>
+<div class="card border-light mb-3 col-lg-4" style="min-width: 40rem;">
+    <div class="card-body table-responsive text-nowrap">
+        <table class="table table-hover">
+            <tbody>
+                <tr>
+                    <th colspan="2"><h5><strong>{{book.title}}</strong></h5></th>
+                </tr>
+                <tr>
+                    <td>Автор(ы)</td>
+                    <td>
+                        <ul style="list-style-type: none; padding: 0; margin: 0;">
+                        {% for author in bookauthor %}
+                            <li>{{ author.id_author }}</li>
+                        {% empty %}
+                            <li>Не указан(ы)</li>
+                        {% endfor %}
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Издательство</td>
+                    <td>{{ book.id_publisher|default_if_none:"Не указано"}}</td>
+                </tr>
+                <tr>
+                    <td>Год издания</td>
+                    <td>{{book.year|default_if_none:"Не указан"}}</td>
+                </tr>
+                <tr>
+                    <td>Кол-во страниц</td>
+                    <td>{{book.number_page|default_if_none:"Не указано"}}</td>
+                </tr>
+                <tr>
+                    <td>Тип обложки</td>
+                    <td>{{book.id_cover|default_if_none:"Не указан"}}</td>
+                </tr>
+                <tr>
+                    <td>Жанр</td>
+                    <td>{{book.id_genre|default_if_none:"Не указан"}}</td>
+                </tr>
+                <tr>
+                    <td>Рейтинг</td>
+                    <td>{{ book.rating|default_if_none:"Книга ещё не была оценена"}}</td>
+                </tr>
+                <tr>
+                    <th>Цена</th>
+                    {% if not book.sale %}
+                    <th>{{book.price}} р.</th>
+                    {% else %}
+                    <th><del>{{book.price}}</del> {{book.get_sale_price}} р.</th>
+                    {% endif %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card border-light mb-3 col-lg-4" style="min-width: 60rem;">
+    <h4><strong>Аннотация</strong></h4>
+    {{book.description}}
+</div>
+
+{% if feedback.count > 0 or book.is_feedback %}
+<div class="card border-light mb-3 col-lg-4" style="min-width: 60rem;">
+    <h4><strong>Отзывы</strong></h4>
+
+    <div class=" text-left">
+        {% if book.is_feedback %}
+        <a type="button" class="btn btn-primary" href="{% url 'feedback' pk=book.id_book %}">Добавить отзыв</a>
+        {% endif %}
+    </div>
+
+    <div class="row" align="left" style="overflow-x: hidden; overflow-y: auto; max-height:400px;">
+        {% for each_feedback in feedback %}
+        <div class="card border-light mb-3" style="width: 55rem;">
+            <div class="card-body">
+                <h6 class="card-title">{{ each_feedback.id_user }} оценил книгу на <strong>{{ each_feedback.rating }}/5</strong> <p class="card-text" align="right"><em>{{ each_feedback.created_at|date:"Y-m-d" }}</em></p></h6>
+                <hr>
+                <p class="card-text">{{ each_feedback.text }}</p>
+            </div>
+        </div>
+        {% empty %}
+        <p></p>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

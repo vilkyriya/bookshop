@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block head_title %}Профиль{% endblock %}
+
+{% block content %}
+
+<div class="card border-light mb-3 col-lg-4" style="min-width: 40rem;">
+    <div class="card-header">Данные пользователя</div>
+    <div class="card-body table-responsive text-nowrap">
+        <table class="table table-hover">
+            <tbody>
+                <tr>
+                    <th>Ник</th>
+                    <td>{{ user.username }}</td>
+                </tr>
+                <tr>
+                    <th>Фамилия</th>
+                    <td>{{ user.last_name }}</td>
+                </tr>
+                <tr>
+                    <th>Имя</th>
+                    <td>{{ user.first_name }}</td>
+                </tr>
+                <tr>
+                    <th>E-mail</th>
+                    <td>{{ user.email }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row justify-content-center">
+        <a class="btn btn-md btn-primary" href="{% url 'edit_user' pk=user.id%}">Редактировать данные</a>
+    </div>
+</div>
+
+{% endblock %}

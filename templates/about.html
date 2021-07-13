@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block head_title %}О нас{% endblock %}
+
+{% block content %}
+<div class="card border-light mb-3 col-lg-4" style="min-width: 60rem;">
+    <div class="card-header">О магазине</div>
+    <div class="card-body table-responsive">
+        Данный магазин разработан в рамках курсового проекта по дисциплине "Проектирование Интернет-приложений"
+        студенткой Томского Политехнического университета группы 8ВМ92 Лобановой Викторией.
+    </div>
+
+    <div class="card-body table-responsive">
+        Вы можете выбрать книги онлайн в данном книжном магазине и оформить заказ.
+        Забрать свой заказ можно в следующих магазинах:
+        <ul>
+        {% for address in addresses %}
+            <li>{{ address.city }}, {{ address.street }} {{ address.house_number }}</li>
+        {% endfor %}
+        </ul>
+
+    </div>
+</div>
+{% endblock %}

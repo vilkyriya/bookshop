@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block head_title %}Старые заказы{% endblock %}
+
+{% block content %}
+
+<div class="card border-light mb-3 col-lg-4" style="min-width: 90rem;">
+<div class="card-header">Заказы</div>
+    <div class="card-body table-responsive text-nowrap">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Книги</th>
+                    <th scope="col">Сумма заказа</th>
+                    <th scope="col">Дата заказа</th>
+                    <th scope="col">Адрес</th>
+                    <th scope="col">Способ оплаты</th>
+                    <th scope="col">Статус</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for each_order in order %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>
+                            <ul style="list-style-type: none; padding: 0; margin: 0;">
+                                {% for book in each_order.id_orderbook.all %}
+                                    <li><a href="{% url 'book' book.id_book_id %}">{{ book.id_book }}</a></li>
+                                    {% empty %}
+                                    Книги не добавлены
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td>{{ each_order.get_order_price }} р.</td>
+                        <td>{{ each_order.ordered_at|date:"Y-m-d H:i" }}</td>
+                        <td>{{ each_order.id_address }}</td>
+                        <td>{{ each_order.id_payment }}</td>
+                        <td>
+                            {% if each_order.is_bought %}
+                            Оплачен
+                            {% else %}
+                            Ожидает оплаты
+                            {%endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan='7'>У вас еще нет заказов </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

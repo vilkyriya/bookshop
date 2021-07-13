@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block head_title %}Корзина{% endblock %}
+
+{% block content %}
+
+<div class="card border-light mb-3 col-lg-4" style="min-width: 60rem;">
+    <div class="card-header">Ваша корзина</div>
+    <div class="card-body table-responsive text-nowrap">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Название книги</th>
+                    <th scope="col">Количество</th>
+                    <th scope="col">Цена</th>
+                    <th scope="col">Общая стоимость</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for book in orderbook %}
+            <tr>
+                <td scope="row">{{ forloop.counter }}</td>
+                <td><a href="{% url 'book' book.id_book_id %}">{{ book.id_book }}</a></td>
+                <td>
+                    {% if book.quantity > 1 %}
+                    <a href="{% url 'remove-from-cart' pk=book.id_book_id %}">-</a> {% else %} <a>-</a>
+                    {% endif %}
+                    {{ book.quantity }}
+                    {% if book.quantity < book.stock %}
+                    <a href="{% url 'add-to-cart' pk=book.id_book_id %}">+</a> {% else %} <a>+</a>
+                    {% endif %}
+                </td>
+                <td>{{ book.price }}</td>
+                <td>{{ book.get_cart_book_price }}</td>
+                <td>
+                    <a class="btn btn-outline-secondary btn-sm"
+                       href="{% url 'delete-book-from-cart' pk=book.id_book_id %}">
+                        Удалить
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+                <tr>
+                    <td colspan='5'>Корзина пуста</td>
+                </tr>
+            {% endfor %}
+            <tr align="right">
+                <th colspan="6">Итого: {{order.get_order_price}} p.</th>
+            </tr>
+            </tbody>
+        </table>
+
+        <blockquote class="blockquote text-right">
+            <a class="btn btn-outline-primary" href="{% url 'catalog' %}">В каталог</a>
+            {% if orderbook.count > 0 %}
+            <a class="btn btn-primary" href="{% url 'checkout' pk=user.id %}">Заказать</a>
+            {% endif %}
+        </blockquote>
+    </div>
+</div>
+
+{% endblock %}

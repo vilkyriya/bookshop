@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block head_title %}Подтверждение заказа{% endblock %}
+
+{% block content %}
+
+<form method='POST'>
+    {% csrf_token %}
+    <div class="row justify-content-center">
+        <div class="card border-light mb-3 col-lg-4" style="min-width: 40rem;">
+            <div>
+                <div id="div_id_address" class="form-group">
+                    <div class="card-header">Выберите адрес самовывоза </div>
+                    <div class="card-body">
+                        {% for ad_choice in form.fields.id_address.queryset %}
+                        <div class="custom-control custom-radio">
+                            <input type="radio" class="custom-control-input" name="id_address" id="ad_{{ ad_choice.id_address }}" value="{{ ad_choice.id_address }}" required checked="">
+                            <label for="ad_{{ ad_choice.id_address }}" class="custom-control-label">{{ ad_choice.city }}, {{ ad_choice.street }} {{ ad_choice.house_number }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div id="div_id_payment" class="form-group">
+                    <div class="card-header">Выберите тип оплаты</div>
+                    <div class="card-body">
+                        {% for p_choice in form.fields.id_payment.queryset %}
+                        <div class="custom-control custom-radio">
+                            <input type="radio" class="custom-control-input" name="id_payment" id="p_{{ p_choice.id_payment }}" value="{{ p_choice.id_payment }}" required checked="">
+                            <label for="p_{{ p_choice.id_payment }}" class="custom-control-label">{{ p_choice.payment }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <hr class="mb-4">
+                <button class="btn btn-primary btn-block" type="submit">Подтвердить заказ</button>
+            </div>
+        </div>
+        <div class="card border-light mb-3 col-lg-4" style="min-width: 40rem;">
+            <div class="card-header">Ваша корзина</div>
+            <div class="card-body table-responsive text-nowrap">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Книга</th>
+                        <th scope="col">Количество</th>
+                        <th scope="col">Цена</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in order.id_orderbook.all %}
+                    <tr>
+                        <td>{{ book.id_book}}</td>
+                        <td>{{ book.quantity}}</td>
+                        <td>{{ book.get_cart_book_price }} р.</td>
+                    </tr>
+                    {% endfor %}
+                    <tr align="right">
+                        <th colspan="6">Итого: {{order.get_order_price}} p.</th>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+ </form>
+
+{% endblock %}

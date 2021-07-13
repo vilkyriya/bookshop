@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block head_title %}Каталог{% endblock %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class="col-dm-3" style="max-width: 15rem;" align="left">
+    <form method="get">
+        <button class="btn btn-primary" type="submit">Применить</button>
+        <a class="btn btn-outline-secondary" href="{% url 'catalog' %}">Сбросить</a>
+        <p></p>
+        {{ filter.form|crispy }}
+    </form>
+</div>
+
+<div class="mb-3 col-lg-4" style="min-width: 70rem;">
+    <div class="row" align="center">
+        {% include "pagination.html" %}
+        {% for book in page_obj %}
+        <div class="col-md-3" style="width: 20rem; min-height: 20rem;" >
+            <div>
+                <a href="{% url 'book' book.id_book %}">
+                    {% if book.sale %}
+                    <img style="background-image:url({{ book.image.url }}); background-size: contain; height:200px; width:130px;"
+                         src="{{ MEDIA_URL }}/sale.png" height="200px" width="130px">
+                    {% else %}
+                    <img src="{{ book.image.url }}" height="200px" width="130px">
+                    {% endif %}
+                </a>
+                <div>{{book.title}}</div>
+                {% if book.id_bookauthor.count == 1 %}
+                    <div><small>{{book.id_bookauthor.first.id_author}}</small></div>
+                {% else %}
+                    <div><small>{{book.id_bookauthor.first.id_author}} и др.</small></div>
+                {% endif %}
+
+                {% if book.sale %}
+                <div><strong><del>{{book.price}}</del> {{book.get_sale_price}} р.</strong></div>
+                {% else %}
+                <div><strong>{{book.price}} р.</strong></div>
+                {% endif %}
+
+            </div>
+        </div>
+        {% endfor %}
+
+        {% include "pagination.html" %}
+    </div>
+</div>
+
+
+{% endblock %}
